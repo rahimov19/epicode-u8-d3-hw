@@ -11,7 +11,7 @@ class BookList extends Component {
   render() {
     return (
       <Container fluid>
-        <Form className="d-flex w-50">
+        <Form className="d-flex w-100 mb-4">
           <FormControl
             type="search"
             placeholder="Search for Books"
@@ -28,6 +28,7 @@ class BookList extends Component {
               Cardimg={book.img}
               Cardtitle={book.title}
               Cardtext={book.category}
+              Price={book.price}
               key={book.asin}
             />
           ))}
@@ -38,6 +39,7 @@ class BookList extends Component {
               Cardimg={book.img}
               Cardtitle={book.title}
               Cardtext={book.category}
+              Price={book.price}
               key={book.asin}
             />
           ))}

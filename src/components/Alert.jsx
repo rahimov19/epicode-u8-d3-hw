@@ -3,11 +3,10 @@ import { Alert } from "react-bootstrap";
 const AlertComp = () => {
   return (
     <Alert variant="danger">
-      <Alert.Heading>Oh snap! You got an error!</Alert.Heading>
+      <Alert.Heading>Welcome To Books Shop </Alert.Heading>
       <p>
-        Change this and that and try again. Duis mollis, est non commodo luctus,
-        nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis
-        consectetur purus sit amet fermentum.
+        Our books are really booked! Just read and u'll find it that there is no
+        booked books like our books!
       </p>
     </Alert>
   );

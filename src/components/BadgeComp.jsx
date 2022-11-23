@@ -1,9 +1,9 @@
 import { Badge } from "react-bootstrap";
 
-const BadgeComp = ({ color }) => {
+const BadgeComp = ({ color, price }) => {
   return (
     <div>
-      <Badge className={color}>Danger</Badge>
+      <Badge className={color}>{price}$</Badge>
     </div>
   );
 };
