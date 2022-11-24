@@ -20,7 +20,7 @@ class BookList extends Component {
             onChange={(e) => this.setState({ searchQuery: e.target.value })}
           />
         </Form>
-        <Row>
+        {/* <Row>
           {History.filter((book) =>
             book.title.toLowerCase().includes(this.state.searchQuery)
           ).map((book) => (
@@ -29,10 +29,11 @@ class BookList extends Component {
               Cardtitle={book.title}
               Cardtext={book.category}
               Price={book.price}
+              BookAsin={book.asin}
               key={book.asin}
             />
           ))}
-        </Row>
+        </Row> */}
         <Row>
           {History.slice(0, 20).map((book) => (
             <SingleBook
@@ -40,6 +41,7 @@ class BookList extends Component {
               Cardtitle={book.title}
               Cardtext={book.category}
               Price={book.price}
+              asin={book.asin}
               key={book.asin}
             />
           ))}

@@ -1,17 +1,52 @@
 import { Card } from "react-bootstrap";
 import BadgeComp from "./BadgeComp.jsx";
+import CommenetArea from "./CommenetArea.jsx";
+import React, { Component } from "react";
 
-const SingleBook = ({ Cardimg, Cardtitle, Cardtext, Price }) => {
-  return (
-    <Card style={{ width: "18rem" }}>
-      <Card.Img variant="top" src={Cardimg} />
-      <Card.Body>
-        <Card.Title>{Cardtitle}</Card.Title>
-        <Card.Text>{Cardtext}</Card.Text>
-        <BadgeComp color="bg-danger" price={Price}></BadgeComp>
-      </Card.Body>
-    </Card>
-  );
-};
+export default class SingleBook extends Component {
+  state = {
+    selected: false,
+    show: false,
+  };
 
-export default SingleBook;
+  toggleCard = () => {
+    console.log("clikc");
+    this.setState({
+      selected: !this.state.selected,
+      show: !this.state.show,
+    });
+  };
+
+  handleClose = () => {
+    this.setState({ show: false });
+  };
+
+  render() {
+    console.log(this.state);
+    return (
+      <Card
+        style={{
+          width: "18rem",
+          borderColor: this.state.selected ? "red" : "transparent",
+        }}
+      >
+        <Card.Img
+          variant="top"
+          src={this.props.Cardimg}
+          onClick={this.toggleCard}
+        />
+        <Card.Body>
+          <Card.Title>{this.props.Cardtitle}</Card.Title>
+          <Card.Text>{this.props.Cardtext}</Card.Text>
+          <BadgeComp color="bg-danger" price={this.props.Price}></BadgeComp>
+          <CommenetArea
+            cardTitle={this.props.Cardtitle}
+            handleClose={this.handleClose}
+            show={this.state.show}
+            asin={this.props.asin}
+          />
+        </Card.Body>
+      </Card>
+    );
+  }
+}
