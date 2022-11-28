@@ -7,12 +7,14 @@ export default class SingleBook extends Component {
   state = {
     selected: false,
     show: false,
+    selectedBook: false,
   };
 
   toggleCard = () => {
     console.log("clikc");
     this.setState({
       selected: !this.state.selected,
+      asin: "",
       show: !this.state.show,
     });
   };
@@ -25,6 +27,7 @@ export default class SingleBook extends Component {
     console.log(this.state);
     return (
       <Card
+        onClick={(e) => this.props.changeSelectedBook(this.props.asin)}
         style={{
           width: "18rem",
           borderColor: this.state.selected ? "red" : "transparent",

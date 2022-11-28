@@ -1,13 +1,18 @@
 import { Component } from "react";
-import { Container, Form, FormControl, Row } from "react-bootstrap";
+import { Col, Container, Form, FormControl, Row } from "react-bootstrap";
 import History from "../history.json";
 import SingleBook from "./SingleBook";
+import CommenetArea from "./CommenetArea";
 
 class BookList extends Component {
   state = {
     searchQuery: "",
+    asin: "",
+    changeSelectedBook: "",
   };
-
+  changeSelectedBook = (newBook) => {
+    this.setState({ asin: newBook });
+  };
   render() {
     return (
       <Container fluid>
@@ -20,32 +25,26 @@ class BookList extends Component {
             onChange={(e) => this.setState({ searchQuery: e.target.value })}
           />
         </Form>
-        {/* <Row>
-          {History.filter((book) =>
-            book.title.toLowerCase().includes(this.state.searchQuery)
-          ).map((book) => (
-            <SingleBook
-              Cardimg={book.img}
-              Cardtitle={book.title}
-              Cardtext={book.category}
-              Price={book.price}
-              BookAsin={book.asin}
-              key={book.asin}
-            />
-          ))}
-        </Row> */}
-        <Row>
-          {History.slice(0, 20).map((book) => (
-            <SingleBook
-              Cardimg={book.img}
-              Cardtitle={book.title}
-              Cardtext={book.category}
-              Price={book.price}
-              asin={book.asin}
-              key={book.asin}
-            />
-          ))}
-        </Row>
+        <Container>
+          <Row>
+            <Col>
+              {History.slice(0, 20).map((book) => (
+                <SingleBook
+                  changeSelectedBook={this.changeSelectedBook}
+                  Cardimg={book.img}
+                  Cardtitle={book.title}
+                  Cardtext={book.category}
+                  Price={book.price}
+                  asin={book.asin}
+                  key={book.asin}
+                />
+              ))}
+            </Col>
+            <Col>
+              <CommenetArea changeSelectedBook={this.state.asin} />
+            </Col>
+          </Row>
+        </Container>
       </Container>
     );
   }
