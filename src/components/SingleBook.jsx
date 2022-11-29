@@ -1,55 +1,49 @@
-import { Card } from "react-bootstrap";
+import { Container, Col, Row, Card } from "react-bootstrap";
 import BadgeComp from "./BadgeComp.jsx";
 import CommenetArea from "./CommenetArea.jsx";
-import React, { Component } from "react";
+import React, { useState } from "react";
 
-export default class SingleBook extends Component {
-  state = {
-    selected: false,
-    show: false,
-    selectedBook: false,
-  };
+export default function SingleBook(props) {
+  const [selected, setSelected] = useState(false);
+  const [show, setShow] = useState(false);
 
-  toggleCard = () => {
+  function toggleCard() {
     console.log("clikc");
-    this.setState({
-      selected: !this.state.selected,
-      asin: "",
-      show: !this.state.show,
-    });
-  };
-
-  handleClose = () => {
-    this.setState({ show: false });
-  };
-
-  render() {
-    console.log(this.state);
-    return (
-      <Card
-        onClick={(e) => this.props.changeSelectedBook(this.props.asin)}
-        style={{
-          width: "18rem",
-          borderColor: this.state.selected ? "red" : "transparent",
-        }}
-      >
-        <Card.Img
-          variant="top"
-          src={this.props.Cardimg}
-          onClick={this.toggleCard}
-        />
-        <Card.Body>
-          <Card.Title>{this.props.Cardtitle}</Card.Title>
-          <Card.Text>{this.props.Cardtext}</Card.Text>
-          <BadgeComp color="bg-danger" price={this.props.Price}></BadgeComp>
-          <CommenetArea
-            cardTitle={this.props.Cardtitle}
-            handleClose={this.handleClose}
-            show={this.state.show}
-            asin={this.props.asin}
-          />
-        </Card.Body>
-      </Card>
-    );
+    setSelected(!selected);
+    setShow(!show);
   }
+
+  function handleClose() {
+    setShow(false);
+  }
+
+  return (
+    <Container>
+      <Row className="Column1">
+        <Col className="column2">
+          <Card
+            onClick={(e) => props.changeSelectedBook2(props.asin)}
+            style={{
+              borderColor: selected ? "red" : "transparent",
+            }}
+          >
+            <Card.Img variant="top" src={props.Cardimg} onClick={toggleCard} />
+            <Card.Body>
+              <Card.Title>{props.asin}</Card.Title>
+              <Card.Text>{props.Cardtext}</Card.Text>
+              <BadgeComp color="bg-danger" price={props.Price}></BadgeComp>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col>
+          <CommenetArea
+            cardTitle={props.Cardtitle}
+            handleClose={handleClose}
+            show={show}
+            asin={props.asin}
+          />
+        </Col>
+      </Row>
+    </Container>
+  );
 }

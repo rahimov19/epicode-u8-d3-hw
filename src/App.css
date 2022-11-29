@@ -6,13 +6,27 @@
   height: 40vmin;
   pointer-events: none;
 }
-
+.Column1 {
+  border: 2px solid black;
+  padding: 1em;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
 }
-
+.column2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.commentbox {
+  background-color: antiquewhite;
+  padding: 1em;
+  border-radius: 10px;
+  margin-block: 10px;
+}
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

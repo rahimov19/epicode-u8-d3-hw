@@ -1,36 +1,32 @@
-import React, { Component } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import { Form, Modal, Button } from "react-bootstrap";
 
-export default class CommenetArea extends Component {
-  state = {
-    commID: "",
-    comments: [],
-    Rate: "",
-    Id: "",
-    Comment: "",
-    isLoading: false,
-    newComment: {
-      comment: "",
-      rate: 1,
-      elementId: this.props.asin,
-    },
-    changeSelectedBook: "",
-  };
-  onChangeHandler = (value, fieldToSet) => {
-    this.setState({
-      newComment: { ...this.state.newComment, [fieldToSet]: value },
-    });
-  };
+export default function CommenetArea(props) {
+  const [comments, setComments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [newComment, setNewComment] = useState({
+    comment: "",
+    rate: 1,
+    elementId: props.asin,
+  });
 
-  onSubmitHandler = async (e, asin) => {
+  function onChangeHandler(value, fieldToSet) {
+    setNewComment({
+      ...newComment,
+      [fieldToSet]: value,
+    });
+  }
+
+  async function onSubmitHandler(e, asin) {
     e.preventDefault();
-    console.log(this.state.newComment);
+    console.log(newComment);
     try {
       let response = await fetch(
         `https://striveschool-api.herokuapp.com/api/comments/`,
         {
           method: "POST",
-          body: JSON.stringify(this.state.newComment),
+          body: JSON.stringify(newComment),
           headers: {
             "Content-Type": "application/json",
             Authorization:
@@ -41,12 +37,10 @@ export default class CommenetArea extends Component {
       console.log(response);
       if (response.ok) {
         alert("New Comment Added");
-        this.setState({
-          newComment: {
-            comment: "",
-            rate: "",
-            elementId: "",
-          },
+        setNewComment({
+          comment: "",
+          rate: "",
+          elementId: "",
         });
       } else {
         console.log("Error");
@@ -54,12 +48,12 @@ export default class CommenetArea extends Component {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
-  fetchComments = async () => {
+  async function fetchComments() {
     try {
       let response = await fetch(
-        `https://striveschool-api.herokuapp.com/api/comments/${this.props.changeSelectedBook}`,
+        `https://striveschool-api.herokuapp.com/api/comments/${props.asin}`,
         {
           headers: {
             Authorization:
@@ -69,40 +63,32 @@ export default class CommenetArea extends Component {
       );
       if (response.ok) {
         let data = await response.json();
-        this.setState({
-          comments: data,
-          isLoading: false,
-        });
-        console.log(this.state);
+        setComments(data);
+        setIsLoading(false);
       } else {
         console.log("Error");
         setTimeout(() => {
-          this.state({ isLoading: false });
+          setIsLoading(false);
         }, 1000);
       }
     } catch (error) {
       console.log(error);
-      this.state({ isLoading: false });
+      setIsLoading(false);
     }
-  };
-
-  componentDidMount() {
-    // this.fetchComments(this.props.asin);
   }
-  componentDidUpdate = (prevProps, prevState) => {
-    if (prevProps.changeSelectedBook !== this.props.changeSelectedBook) {
-      this.fetchComments();
-    }
-  };
-  deleteComment = async (commID) => {
+
+  useEffect(() => {
+    fetchComments();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.changeSelectedBook]);
+
+  async function deleteComment(commID) {
     try {
       let response = await fetch(
         `https://striveschool-api.herokuapp.com/api/comments/${commID}`,
         {
           method: "DELETE",
-          //   body: JSON.stringify(this.state.newComment),
           headers: {
-            //     "Content-Type": "application/json",
             Authorization:
               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZThmNGQ0YmUzZDAwMTU4NDVmYzYiLCJpYXQiOjE2NjkyOTc1OTAsImV4cCI6MTY3MDUwNzE5MH0.0vYjZiBh3fyWJADL5GtSORpe3Cuddnx-sNkWi4MYljU",
           },
@@ -118,100 +104,94 @@ export default class CommenetArea extends Component {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
-  render() {
-    return (
-      <>
-        <Modal show={this.props.show} onHide={this.props.handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Reviews of {this.props.cardTitle}</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {this.state.comments.map((comment) => (
-              <div>
-                <h4>{comment.author}</h4>
-                <p>{comment.comment}</p>
-                <p>{comment.rate} stars of 5</p>
-                <Button
-                  variant="danger"
-                  className="mb-4"
-                  onClick={(e) => this.deleteComment(comment._id)}
-                >
-                  Delete
-                </Button>
-              </div>
-            ))}
-            <h2>Add new Comment</h2>
-            <Form>
-              <Form.Group controlId="exampleForm.ControlInput1">
-                <Form.Label>ID</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder="ID"
-                  disabled
-                  value={this.props.asin}
-                  onChange={(e) =>
-                    this.onChangeHandler(e.target.value, "elementId")
-                  }
-                />
-              </Form.Group>
-              <Form.Group controlId="exampleForm.ControlSelect1">
-                <Form.Label>Rate</Form.Label>
-                <Form.Control
-                  as="select"
-                  value={this.state.newComment.rate}
-                  onChange={(e) => this.onChangeHandler(e.target.value, "rate")}
-                >
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group controlId="exampleForm.ControlTextarea1">
-                <Form.Label>Comment</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  value={this.state.newComment.comment}
-                  onChange={(e) =>
-                    this.onChangeHandler(e.target.value, "comment")
-                  }
-                />
-              </Form.Group>
-            </Form>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.props.handleClose}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={this.onSubmitHandler}>
-              Submit Comment
-            </Button>
-          </Modal.Footer>
-        </Modal>
-
-        {!this.state.comments ? (
-          <h1>No Comments to List</h1>
-        ) : (
-          this.state.comments.map((com) => (
+  return (
+    <>
+      <Modal show={props.show} onHide={props.handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Reviews of {props.cardTitle}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {comments.map((comment) => (
             <div>
-              <h2>{com.author}</h2>
-              <p>{com.comment}</p>
-              <p>{com.rate} stars of 5</p>
+              <h4>{comment.author}</h4>
+              <p>{comment.comment}</p>
+              <p>{comment.rate} stars of 5</p>
               <Button
                 variant="danger"
                 className="mb-4"
-                onClick={(e) => this.deleteComment(com._id)}
+                onClick={(e) => deleteComment(comment._id)}
               >
                 Delete
               </Button>
             </div>
-          ))
-        )}
-      </>
-    );
-  }
+          ))}
+          <h2>Add new Comment</h2>
+          <Form>
+            <Form.Group controlId="exampleForm.ControlInput1">
+              <Form.Label>ID</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="ID"
+                disabled
+                value={props.asin}
+                onChange={(e) => onChangeHandler(e.target.value, "elementId")}
+              />
+            </Form.Group>
+            <Form.Group controlId="exampleForm.ControlSelect1">
+              <Form.Label>Rate</Form.Label>
+              <Form.Control
+                as="select"
+                value={newComment.rate}
+                onChange={(e) => onChangeHandler(e.target.value, "rate")}
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </Form.Control>
+            </Form.Group>
+            <Form.Group controlId="exampleForm.ControlTextarea1">
+              <Form.Label>Comment</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                value={newComment.comment}
+                onChange={(e) => onChangeHandler(e.target.value, "comment")}
+              />
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={props.handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={onSubmitHandler}>
+            Submit Comment
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {!comments ? (
+        <h1>No Comments to List</h1>
+      ) : (
+        comments.map((com) => (
+          <div className="commentbox">
+            <h2>{com.author}</h2>
+            <p>{com.comment}</p>
+            <p>{com.rate} stars of 5</p>
+            <Button
+              variant="danger"
+              className="mb-4"
+              onClick={(e) => deleteComment(com._id)}
+            >
+              Delete
+            </Button>
+          </div>
+        ))
+      )}
+    </>
+  );
 }
